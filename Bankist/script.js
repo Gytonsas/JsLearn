@@ -2,6 +2,13 @@ const modal = document.querySelector(".modal");
 const overlay = document.querySelector(".overlay");
 const btnCloseModal = document.querySelector(".btn--close-modal");
 const btnsOpenModal = document.querySelectorAll(".btn--show-modal");
+const nav = document.querySelector(".nav");
+const header = document.querySelector(".header");
+const allSections = document.querySelectorAll(".section");
+const message = document.createElement("div");
+const tabs = document.querySelectorAll(".operations__tab");
+const tabsContainer = document.querySelector(".operations__tab-container");
+const tabsContent = document.querySelectorAll(".operations__content");
 
 const openModal = function (e) {
   e.preventDefault();
@@ -58,8 +65,6 @@ console.log(document.documentElement);
 console.log(document.head);
 console.log(document.body);
 
-const header = document.querySelector(".header");
-const allSections = document.querySelectorAll(".section");
 console.log(allSections);
 
 document.getElementById("section--1");
@@ -71,7 +76,6 @@ console.log(document.getElementsByClassName("btn"));
 // Creatong and inserting elements
 // .insertAdjacentHTML
 
-const message = document.createElement("div");
 message.classList.add("cookie-message");
 //message.textContent = "We use cookied for imporved functionality and analytics.";
 ////
@@ -200,7 +204,7 @@ document.querySelector(".nav").addEventListener("click", function (e) {
   this.style.backgroundColor = randomColor();
   console.log("NAV", e.target, e.currentTarget);
 });
-
+/*
 //Going downwards: child
 console.log(h1.querySelectorAll(".highlight"));
 console.log(h1.childNodes);
@@ -227,11 +231,8 @@ console.log(h1.parentElement.children);
 [...h1.parentElement.children].forEach(function (el) {
   if (el !== h1) el.style.transform = "scale(0.5)";
 });
-
+*/
 //tabble component
-const tabs = document.querySelectorAll(".operations__tab");
-const tabsContainer = document.querySelector(".operations__tab-container");
-const tabsContent = document.querySelectorAll(".operations__content");
 
 //tabs.forEach((t) => t.addEventListener("click", () => console.log("TAB")));
 
@@ -252,4 +253,62 @@ tabsContainer.addEventListener("click", function (e) {
   document
     .querySelector(`.operations__content--${clicked.dataset.tab}`)
     .classList.add("operations__content--active");
+});
+
+// Menu fade animation
+const handleHover = function (e) {
+  console.log(this, e.currentTarget);
+
+  if (e.target.classList.contains("nav__link")) {
+    const link = e.target;
+    const siblings = link.closest(".nav").querySelectorAll(".nav__link");
+    const logo = link.closest(".nav").querySelector("img");
+
+    siblings.forEach((el) => {
+      if (el !== link) el.style.opacity = this;
+    });
+    logo.style.opacity = this;
+  }
+};
+
+//Passing argument into handler
+nav.addEventListener("mouseover", handleHover.bind(0.5));
+nav.addEventListener("mouseout", handleHover.bind(1));
+
+//Sticky navigation
+
+const navHeight = nav.getBoundingClientRect().height;
+
+const stickyNav = function (entries) {
+  const [entry] = entries;
+  // console.log(entry);
+
+  if (!entry.isIntersecting) nav.classList.add("sticky");
+  else nav.classList.remove("sticky");
+};
+
+const headerObserver = new IntersectionObserver(stickyNav, {
+  root: null,
+  threshold: 0,
+  rootMargin: `-${navHeight}px`,
+});
+
+//Reveal sections
+
+const revealSection = function (entries, observer) {
+  const [entry] = entries;
+
+  if (!entry.isIntersecting) return;
+
+  entry.target.classList.remove("section--hidden");
+  observer.unobserve(entry.target);
+};
+
+const sectionObserver = new IntersectionObserver(revealSection, {
+  root: null,
+  threshold: 0.15,
+});
+allSections.forEach(function (section) {
+  sectionObserver.observe(section);
+  section.classList.add("section--hidden");
 });
