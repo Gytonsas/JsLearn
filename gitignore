@@ -1,0 +1,10 @@
+.gitignore
+.vs/
+3dengine_headeronly.sln
+3dengine_headeronly/
+CMakeLists.txt
+Debug/
+Tests/
+cmake-build-debug/
+packages/
+resources/
